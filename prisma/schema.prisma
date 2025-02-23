@@ -25,15 +25,16 @@ model User {
   image         String?
   role          UserRole?
   typeUser      String?
-  isActive      Boolean   @default(true)
-  otpToken      String? // Guardamos el token temporalmente
-  otpExpires    DateTime? // Fecha de expiración del token
+  isActive      Boolean   @default(false)
+  otpToken      String?
+  otpExpires    DateTime?
   accounts      Account[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Company Company[]
+  Company  Company?
+  Bookings Booking[]
 }
 
 model Account {
@@ -58,12 +59,110 @@ model Account {
 }
 
 model Company {
-  id          String  @id @default(uuid())
-  userId      String  @unique
+  id          String      @id @default(uuid())
+  userId      String      @unique
   companyName String
   nit         Int
   address     String?
   phone       Int?
   image       String?
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services    Service[]
+  promotions  Promotion[]
+  barbers     Barber[]
+  bookings    Booking[]
+  Money       String?
+  Moneybench  String?
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Barber {
+  id        String   @id @default(uuid())
+  companyId String
+  name      String
+  image     String?
+  startTime DateTime // Hora de inicio del barbero
+  endTime   DateTime // Hora de fin del barbero
+  isActive  Boolean  @default(true) // si esta disponible o no
+
+  services Service[] @relation("BarberServices")
+  bookings Booking[]
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Service {
+  id          String  @id @default(uuid())
+  companyId   String
+  name        String
+  price       Float
+  duration    Int // Duración en minutos
+  description String?
+
+  company   Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  barbers   Barber[]    @relation("BarberServices")
+  bookings  Booking[]
+  Promotion Promotion[]
+}
+
+model Booking {
+  id          String         @id @default(uuid())
+  userId      String
+  companyId   String
+  barberId    String
+  serviceId   String
+  date        DateTime
+  status      BookingStatus? @default(PENDING)
+  paymentType PaymentType
+  payment     Payment?
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  barber  Barber  @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentType {
+  ONLINE
+  CASH
+}
+
+model Promotion {
+  id         String   @id @default(uuid())
+  companyId  String
+  serviceId  String
+  title      String
+  discount   Float // Porcentaje de descuento
+  validUntil DateTime
+  promoCode  String   @unique
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  bookingId     String        @unique
+  transactionId String        @unique // ID de la transacción de Wompi
+  amount        Float // Monto pagado
+  currency      String // Moneda (ejemplo: COP, USD)
+  status        PaymentStatus @default(PENDING)
+  paymentMethod String? // Tarjeta, PSE, Nequi, etc.
+  receiptUrl    String? // URL del comprobante de pago
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+enum PaymentStatus {
+  PENDING // El pago está en proceso
+  PAID // El pago fue exitoso
+  FAILED // El pago fue rechazado o falló
 }

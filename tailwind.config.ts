@@ -6,10 +6,20 @@ export default {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       colors: {
+        tremor: {
+          brand: {
+            faint: "#FACC1515",
+            muted: "#FACC1540",
+            subtle: "#FACC15",
+            DEFAULT: "#FACC15",
+            emphasis: "#FACC15",
+          },
+        },
         primary: {
           DEFAULT: "#D4AF37",
           dark: "#B39329",
@@ -17,10 +27,11 @@ export default {
           glow: "#FFE17D",
         },
         dark: {
-          DEFAULT: "#1A1A1A",
+          DEFAULT: "#121212",
           lighter: "#2A2A2A",
           blue: "#1E2A3B",
         },
+        accent: "#FACC15",
         glass: {
           DEFAULT: "rgba(255, 255, 255, 0.1)",
           dark: "rgba(0, 0, 0, 0.2)",
@@ -44,10 +55,7 @@ export default {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
+
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",

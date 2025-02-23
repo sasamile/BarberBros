@@ -6,7 +6,7 @@ import Image from "next/image";
 
 function InitialAuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-radial from-dark-blue to-dark font-montserrat flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-radial from-dark to-black/20 font-montserrat flex items-center justify-center p-4 relative overflow-hidden">
       {/**Ilustracion 1 */}
       <motion.div
   className="absolute -left-5 bottom-20 max-md:hidden z-10"
@@ -86,7 +86,7 @@ function InitialAuthLayout({ children }: { children: React.ReactNode }) {
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-auth-pattern bg-cover bg-center">
-          <div className="absolute inset-0 bg-gradient-to-r from-dark/90 to-dark-blue/90 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-gradient-to-r from-dark/90 to-dark-blue/50 backdrop-blur-sm" />
         </div>
 
         {/* Content Container */}

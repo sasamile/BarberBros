@@ -33,34 +33,20 @@ export const getUserById = async (id?: string) => {
 };
 
 export const getUserByIdWithCompany = async (id?: string) => {
-  if (!id) {
-    return null;
-  }
+  if (!id) return null;
 
   try {
     const userFound = await db.user.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        Company: {
-          select: {
-            nit: true,
-            companyName: true,
-          },
-        },
-      },
+      where: { id },
+      include: { Company: true },
     });
 
-    // Transformar el resultado para que sea más fácil de usar
     return {
       ...userFound,
-      // Si hay compañías, toma la primera (asumiendo que solo debería haber una)
-      CompanyInfo: userFound?.Company && userFound.Company.length > 0 
-        ? userFound.Company[0] 
-        : null
+      CompanyInfo: userFound?.Company ?? null, // Asegurar que siempre se asigne correctamente
     };
-  } catch {
+  } catch (error) {
+    console.error("Error fetching user with company:", error);
     return null;
   }
 };
